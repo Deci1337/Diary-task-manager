@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DiaryTaskManagerApp.Features.Profile.Views.ProfilePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:DiaryTaskManagerApp.Features.Profile.ViewModels"
+    xmlns:infra="clr-namespace:DiaryTaskManagerApp.Infrastructure"
+    x:DataType="vm:ProfilePageViewModel"
+    BackgroundColor="{StaticResource AppBg}">
+
+    <ContentPage.Resources>
+        <infra:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="20,16" RowSpacing="16">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12">
+            <Label Text="Профиль"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="{StaticResource White}" />
+            <Border Grid.Column="1"
+                    BackgroundColor="{StaticResource Surface}"
+                    Padding="12,8"
+                    StrokeThickness="0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="14" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CloseCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="Закрыть"
+                       FontSize="14"
+                       TextColor="{StaticResource White}" />
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="16">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="18" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="16" HorizontalOptions="Center">
+                <Border WidthRequest="120"
+                        HeightRequest="120"
+                        StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="60" />
+                    </Border.StrokeShape>
+                    <Grid>
+                        <Border BackgroundColor="{StaticResource Surface2}"
+                                IsVisible="{Binding HasAvatar, Converter={StaticResource InvertedBoolConverter}}">
+                            <Label Text="👤"
+                                   FontSize="60"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <Image Source="{Binding AvatarPath}"
+                               Aspect="AspectFill"
+                               IsVisible="{Binding HasAvatar}" />
+                    </Grid>
+                </Border>
+                <Border BackgroundColor="{StaticResource Surface2}" Padding="12,10" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickAvatarCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="Изменить фото"
+                           FontSize="14"
+                           TextColor="{StaticResource White}"
+                           HorizontalOptions="Center" />
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="2" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="16">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="18" />
+            </Border.StrokeShape>
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Имя пользователя"
+                       FontSize="13"
+                       TextColor="{StaticResource TextSecondary}" />
+                <Entry Text="{Binding UserName}"
+                       Placeholder="Введите имя"
+                       TextColor="{StaticResource White}"
+                       PlaceholderColor="{StaticResource TextSecondary}" />
+                <Border BackgroundColor="{StaticResource Surface2}" Padding="12,10" StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SaveCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="Сохранить"
+                           FontSize="14"
+                           TextColor="{StaticResource White}"
+                           HorizontalOptions="Center" />
+                </Border>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="3" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="16">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="18" />
+            </Border.StrokeShape>
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" VerticalOptions="Center">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Выполнено задач"
+                           FontSize="13"
+                           TextColor="{StaticResource TextSecondary}" />
+                    <Label Text="{Binding CompletedCount}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource White}" />
+                </VerticalStackLayout>
+                <Border Grid.Column="1"
+                        BackgroundColor="{StaticResource Surface2}"
+                        Padding="10,6"
+                        StrokeThickness="0"
+                        VerticalOptions="Center">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Label Text="{Binding FlamesText}"
+                           FontSize="14"
+                           TextColor="{StaticResource White}" />
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentPage>
+
+

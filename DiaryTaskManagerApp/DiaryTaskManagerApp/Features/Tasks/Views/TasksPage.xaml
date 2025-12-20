@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DiaryTaskManagerApp.Features.Tasks.Views.TasksPage"
+    x:Name="PageRoot"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:DiaryTaskManagerApp.Core.Models"
+    xmlns:vm="clr-namespace:DiaryTaskManagerApp.Features.Tasks.ViewModels"
+    xmlns:behaviors="clr-namespace:DiaryTaskManagerApp.Features.Tasks.Behaviors"
+    xmlns:infra="clr-namespace:DiaryTaskManagerApp.Infrastructure"
+    x:DataType="vm:TasksPageViewModel"
+    BackgroundColor="{StaticResource AppBg}">
+
+    <ContentPage.Resources>
+        <infra:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20,16,20,16" RowSpacing="16">
+
+        <!-- Header: username + flames + profile -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Border WidthRequest="48"
+                    HeightRequest="48"
+                    StrokeThickness="0"
+                    VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="24" />
+                </Border.StrokeShape>
+                <Grid>
+                    <Border BackgroundColor="{StaticResource Surface2}"
+                            IsVisible="{Binding HasAvatar, Converter={StaticResource InvertedBoolConverter}}">
+                        <Label Text="👤"
+                               FontSize="28"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <Image Source="{Binding AvatarPath}"
+                           Aspect="AspectFill"
+                           IsVisible="{Binding HasAvatar}" />
+                </Grid>
+            </Border>
+
+            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+                <Label Text="{Binding UserName}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource White}"
+                       LineBreakMode="TailTruncation"
+                       MaxLines="1" />
+
+                <Border IsVisible="{Binding HasFlames}"
+                        BackgroundColor="{StaticResource Surface2}"
+                        Padding="10,6"
+                        StrokeThickness="0"
+                        VerticalOptions="Center">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Label Text="{Binding FlamesText}"
+                           FontSize="14"
+                           TextColor="{StaticResource White}" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <Border Grid.Column="2"
+                    BackgroundColor="{StaticResource Surface}"
+                    Padding="12"
+                    StrokeThickness="0"
+                    VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnProfileTapped" />
+                </Border.GestureRecognizers>
+                <Label Text="Профиль"
+                       FontSize="14"
+                       TextColor="{StaticResource White}" />
+            </Border>
+        </Grid>
+
+        <!-- Filters / sort -->
+        <Border Grid.Row="1" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.3" Radius="15" Offset="0,4" />
+            </Border.Shadow>
+            <Grid Padding="16,12" ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Picker Grid.Column="0"
+                        Title="Фильтр"
+                        ItemsSource="{Binding FilterOptions}"
+                        SelectedIndex="{Binding SelectedFilterIndex}"
+                        FontSize="14"
+                        TextColor="{StaticResource White}" />
+                <Picker Grid.Column="1"
+                        Title="Сортировка"
+                        ItemsSource="{Binding SortOptions}"
+                        SelectedIndex="{Binding SelectedSortIndex}"
+                        FontSize="14"
+                        TextColor="{StaticResource White}" />
+            </Grid>
+        </Border>
+
+        <!-- List -->
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Tasks}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                    <Label Text="📝"
+                           FontSize="64"
+                           HorizontalOptions="Center"
+                           Opacity="0.3" />
+                    <Label Text="Нет задач"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextSecondary}"
+                           HorizontalOptions="Center" />
+                    <Label Text="Добавьте первую задачу снизу"
+                           FontSize="14"
+                           TextColor="{StaticResource TextSecondary}"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TaskItem">
+                    <SwipeView Margin="0,0,0,12">
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
+                                <SwipeItem Text="Удалить"
+                                           BackgroundColor="#D32F2F"
+                                           Invoked="OnSwipeDelete" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        
+                        <Border Padding="16"
+                                BackgroundColor="{StaticResource Surface}"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Opacity="0.25" Radius="12" Offset="0,3" />
+                            </Border.Shadow>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTaskTapped" />
+                                <PointerGestureRecognizer PointerPressed="OnTaskPressed" PointerReleased="OnTaskReleased" PointerExited="OnTaskExited" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="14">
+                            <Border Grid.RowSpan="3"
+                                    WidthRequest="48"
+                                    HeightRequest="48"
+                                    BackgroundColor="{StaticResource Surface2}"
+                                    VerticalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Label Text="{Binding Emoji}"
+                                       FontSize="26"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
+                                            <Setter Property="Opacity" Value="0.5" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Border>
+
+                            <Label Grid.Column="1"
+                                   Text="{Binding Title}"
+                                   FontAttributes="Bold"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2"
+                                   FontSize="17"
+                                   TextColor="{StaticResource White}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
+                                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                                        <Setter Property="Opacity" Value="0.6" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding CreatedAtText}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextSecondary}"
+                                   Margin="0,4,0,0" />
+
+                            <Label Grid.Row="2"
+                                   Grid.Column="1"
+                                   Text="{Binding CompletedAtText}"
+                                   FontSize="13"
+                                   TextColor="#2E7D32"
+                                   Margin="0,2,0,0"
+                                   IsVisible="{Binding IsCompleted}" />
+                            </Grid>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Bottom input -->
+        <Border Grid.Row="3" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="24" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.35" Radius="18" Offset="0,6" />
+            </Border.Shadow>
+
+            <Grid Padding="8" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <!-- Кнопка переключения важности -->
+                <Border Grid.Column="0"
+                        WidthRequest="56"
+                        HeightRequest="56"
+                        BackgroundColor="{StaticResource Surface2}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding CycleImportanceCommand}" />
+                    </Border.GestureRecognizers>
+                    <Label Text="{Binding CurrentImportanceEmoji}"
+                           FontSize="30"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <!-- Поле ввода -->
+                <Border Grid.Column="1"
+                        BackgroundColor="{StaticResource Surface2}"
+                        Padding="16,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+                    <Entry Placeholder="Введите..."
+                           PlaceholderColor="{StaticResource TextSecondary}"
+                           Text="{Binding NewTaskText}"
+                           ReturnType="Send"
+                           ReturnCommand="{Binding AddTaskCommand}"
+                           TextColor="{StaticResource White}"
+                           FontSize="16"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <!-- Кнопка отправки -->
+                <Border Grid.Column="2"
+                        WidthRequest="56"
+                        HeightRequest="56">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#00E5FF" Offset="0.0" />
+                            <GradientStop Color="#00B8D4" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddTaskCommand}" />
+                    </Border.GestureRecognizers>
+                    <Border.Shadow>
+                        <Shadow Brush="#00E5FF" Opacity="0.4" Radius="10" Offset="0,4" />
+                    </Border.Shadow>
+                    <Label Text="📤"
+                           FontSize="26"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentPage>
+
+
