@@ -15,7 +15,7 @@
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Padding="20,16" RowSpacing="16">
 
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="12">
-            <Label Text="Профиль"
+            <Label Text="Profile"
                    FontSize="20"
                    FontAttributes="Bold"
                    TextColor="{StaticResource White}" />
@@ -29,7 +29,7 @@
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding CloseCommand}" />
                 </Border.GestureRecognizers>
-                <Label Text="Закрыть"
+                <Label Text="Close"
                        FontSize="14"
                        TextColor="{StaticResource White}" />
             </Border>
@@ -66,7 +66,7 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding PickAvatarCommand}" />
                     </Border.GestureRecognizers>
-                    <Label Text="Изменить фото"
+                    <Label Text="Change Photo"
                            FontSize="14"
                            TextColor="{StaticResource White}"
                            HorizontalOptions="Center" />
@@ -79,11 +79,11 @@
                 <RoundRectangle CornerRadius="18" />
             </Border.StrokeShape>
             <VerticalStackLayout Spacing="10">
-                <Label Text="Имя пользователя"
+                <Label Text="Username"
                        FontSize="13"
                        TextColor="{StaticResource TextSecondary}" />
                 <Entry Text="{Binding UserName}"
-                       Placeholder="Введите имя"
+                       Placeholder="Enter name"
                        TextColor="{StaticResource White}"
                        PlaceholderColor="{StaticResource TextSecondary}" />
                 <Border BackgroundColor="{StaticResource Surface2}" Padding="12,10" StrokeThickness="0">
@@ -93,7 +93,7 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding SaveCommand}" />
                     </Border.GestureRecognizers>
-                    <Label Text="Сохранить"
+                    <Label Text="Save"
                            FontSize="14"
                            TextColor="{StaticResource White}"
                            HorizontalOptions="Center" />
@@ -107,7 +107,7 @@
             </Border.StrokeShape>
             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" VerticalOptions="Center">
                 <VerticalStackLayout Spacing="4">
-                    <Label Text="Выполнено задач"
+                    <Label Text="Completed Tasks"
                            FontSize="13"
                            TextColor="{StaticResource TextSecondary}" />
                     <Label Text="{Binding CompletedCount}"

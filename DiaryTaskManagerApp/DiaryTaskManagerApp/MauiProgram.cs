@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 
 namespace DiaryTaskManagerApp
@@ -26,9 +26,16 @@ namespace DiaryTaskManagerApp
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "tasks.db3");
             builder.Services.AddSingleton(new Data.TaskDatabase(dbPath));
             builder.Services.AddSingleton<Data.ITaskRepository, Data.SqliteTaskRepository>();
+            builder.Services.AddSingleton<Data.IFolderRepository, Data.SqliteFolderRepository>();
 
             builder.Services.AddTransient<Features.Tasks.ViewModels.TasksPageViewModel>();
             builder.Services.AddTransient<Features.Tasks.Views.TasksPage>();
+            builder.Services.AddTransient<Features.Folders.ViewModels.FoldersPageViewModel>();
+            builder.Services.AddTransient<Features.Folders.Views.FoldersPage>();
+            builder.Services.AddTransient<Features.Folders.ViewModels.FolderDetailsViewModel>();
+            builder.Services.AddTransient<Features.Folders.Views.FolderDetailsPage>();
+            builder.Services.AddTransient<Features.Settings.ViewModels.SettingsPageViewModel>();
+            builder.Services.AddTransient<Features.Settings.Views.SettingsPage>();
             builder.Services.AddTransient<Features.Profile.ViewModels.ProfilePageViewModel>();
             builder.Services.AddTransient<Features.Profile.Views.ProfilePage>();
             builder.Services.AddSingleton<AppShell>();

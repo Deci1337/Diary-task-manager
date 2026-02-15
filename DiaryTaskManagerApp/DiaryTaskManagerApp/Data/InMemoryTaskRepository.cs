@@ -8,6 +8,9 @@ public sealed class InMemoryTaskRepository : ITaskRepository
 
     public IReadOnlyList<TaskItem> GetAll() => _items;
 
+    public IReadOnlyList<TaskItem> GetByFolderId(string? folderId) =>
+        _items.Where(x => (folderId == null || folderId == "") ? string.IsNullOrEmpty(x.FolderId) : x.FolderId == folderId).ToList();
+
     public void Add(TaskItem item)
     {
         // Upsert by Id (so toggling complete can be persisted without a separate Update method).

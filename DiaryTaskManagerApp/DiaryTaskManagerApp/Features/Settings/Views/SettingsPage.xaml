@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DiaryTaskManagerApp.Features.Settings.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:DiaryTaskManagerApp.Features.Settings.ViewModels"
+    x:DataType="vm:SettingsPageViewModel"
+    BackgroundColor="{StaticResource AppBg}"
+    Title="Settings">
+
+    <Grid RowDefinitions="Auto,*" Padding="16,12">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <Border WidthRequest="48" HeightRequest="48" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" VerticalOptions="Center">
+                <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMenuTapped" /></Border.GestureRecognizers>
+                <Image Source="menu_icon.svg" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Label Grid.Column="1" Text="Settings" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource White}" VerticalOptions="Center" />
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="16">
+                <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Version" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding Version}" FontSize="17" FontAttributes="Bold" TextColor="{StaticResource White}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="4">
+                                <Label Text="Build Date" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+                                <Label Text="{Binding BuildDate}" FontSize="17" FontAttributes="Bold" TextColor="{StaticResource White}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="{StaticResource Surface}" StrokeThickness="0" Padding="16">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                    <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnGitHubTapped" /></Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="GitHub Repository" FontSize="13" TextColor="{StaticResource TextSecondary}" />
+                        <Label Text="Deci1337/Diary-task-manager" FontSize="17" FontAttributes="Bold" TextColor="{StaticResource White}" />
+                        <Label Text="→ Open DiaryTaskManagerApp" FontSize="14" TextColor="{StaticResource Accent}" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

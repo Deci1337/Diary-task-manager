@@ -15,11 +15,26 @@
         <infra:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20,16,20,16" RowSpacing="16">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16,12,16,12" RowSpacing="14">
 
-        <!-- Header: username + flames + profile -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-            <Border WidthRequest="48"
+        <!-- Header: menu + avatar + username + flames + profile -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="10">
+            <Border Grid.Column="0"
+                    WidthRequest="48"
+                    HeightRequest="48"
+                    BackgroundColor="{StaticResource Surface}"
+                    StrokeThickness="0"
+                    VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMenuTapped" />
+                </Border.GestureRecognizers>
+                <Image Source="menu_icon.svg" WidthRequest="24" HeightRequest="24" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Border Grid.Column="1"
+                    WidthRequest="48"
                     HeightRequest="48"
                     StrokeThickness="0"
                     VerticalOptions="Center">
@@ -40,41 +55,43 @@
                 </Grid>
             </Border>
 
-            <HorizontalStackLayout Grid.Column="1" Spacing="10" VerticalOptions="Center">
+            <HorizontalStackLayout Grid.Column="2" Spacing="8" VerticalOptions="Center" HorizontalOptions="Start">
                 <Label Text="{Binding UserName}"
-                       FontSize="20"
+                       FontSize="18"
                        FontAttributes="Bold"
                        TextColor="{StaticResource White}"
                        LineBreakMode="TailTruncation"
-                       MaxLines="1" />
+                       MaxLines="1"
+                       MaximumWidthRequest="120" />
 
                 <Border IsVisible="{Binding HasFlames}"
                         BackgroundColor="{StaticResource Surface2}"
-                        Padding="10,6"
+                        Padding="8,5"
                         StrokeThickness="0"
                         VerticalOptions="Center">
                     <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="14" />
+                        <RoundRectangle CornerRadius="12" />
                     </Border.StrokeShape>
                     <Label Text="{Binding FlamesText}"
-                           FontSize="14"
+                           FontSize="13"
                            TextColor="{StaticResource White}" />
                 </Border>
             </HorizontalStackLayout>
 
-            <Border Grid.Column="2"
+            <Border Grid.Column="3"
                     BackgroundColor="{StaticResource Surface}"
-                    Padding="12"
+                    Padding="10,8"
                     StrokeThickness="0"
-                    VerticalOptions="Center">
+                    VerticalOptions="Center"
+                    HorizontalOptions="End">
                 <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="16" />
+                    <RoundRectangle CornerRadius="14" />
                 </Border.StrokeShape>
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnProfileTapped" />
                 </Border.GestureRecognizers>
-                <Label Text="Профиль"
-                       FontSize="14"
+                <Label Text="Profile"
+                       FontSize="13"
                        TextColor="{StaticResource White}" />
             </Border>
         </Grid>
@@ -84,22 +101,21 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="20" />
             </Border.StrokeShape>
-            <Border.Shadow>
-                <Shadow Brush="Black" Opacity="0.3" Radius="15" Offset="0,4" />
-            </Border.Shadow>
-            <Grid Padding="16,12" ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Grid Padding="16,14" ColumnDefinitions="*,*" ColumnSpacing="12">
                 <Picker Grid.Column="0"
-                        Title="Фильтр"
+                        Title="Filter"
                         ItemsSource="{Binding FilterOptions}"
                         SelectedIndex="{Binding SelectedFilterIndex}"
-                        FontSize="14"
-                        TextColor="{StaticResource White}" />
+                        FontSize="15"
+                        TextColor="{StaticResource White}"
+                        MinimumHeightRequest="48" />
                 <Picker Grid.Column="1"
-                        Title="Сортировка"
+                        Title="Sort"
                         ItemsSource="{Binding SortOptions}"
                         SelectedIndex="{Binding SelectedSortIndex}"
-                        FontSize="14"
-                        TextColor="{StaticResource White}" />
+                        FontSize="15"
+                        TextColor="{StaticResource White}"
+                        MinimumHeightRequest="48" />
             </Grid>
         </Border>
 
@@ -111,12 +127,12 @@
                            FontSize="64"
                            HorizontalOptions="Center"
                            Opacity="0.3" />
-                    <Label Text="Нет задач"
+                    <Label Text="No tasks"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="{StaticResource TextSecondary}"
                            HorizontalOptions="Center" />
-                    <Label Text="Добавьте первую задачу снизу"
+                    <Label Text="Add your first task below"
                            FontSize="14"
                            TextColor="{StaticResource TextSecondary}"
                            HorizontalOptions="Center" />
@@ -127,7 +143,7 @@
                     <SwipeView Margin="0,0,0,12">
                         <SwipeView.RightItems>
                             <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
-                                <SwipeItem Text="Удалить"
+                                <SwipeItem Text="Delete"
                                            BackgroundColor="#D32F2F"
                                            Invoked="OnSwipeDelete" />
                             </SwipeItems>
@@ -139,9 +155,6 @@
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="16" />
                             </Border.StrokeShape>
-                            <Border.Shadow>
-                                <Shadow Brush="Black" Opacity="0.25" Radius="12" Offset="0,3" />
-                            </Border.Shadow>
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnTaskTapped" />
                                 <PointerGestureRecognizer PointerPressed="OnTaskPressed" PointerReleased="OnTaskReleased" PointerExited="OnTaskExited" />
@@ -209,12 +222,8 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="24" />
             </Border.StrokeShape>
-            <Border.Shadow>
-                <Shadow Brush="Black" Opacity="0.35" Radius="18" Offset="0,6" />
-            </Border.Shadow>
-
-            <Grid Padding="8" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                <!-- Кнопка переключения важности -->
+            <Grid Padding="10" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <!-- Importance toggle button -->
                 <Border Grid.Column="0"
                         WidthRequest="56"
                         HeightRequest="56"
@@ -231,24 +240,25 @@
                            VerticalOptions="Center" />
                 </Border>
 
-                <!-- Поле ввода -->
+                <!-- Input field -->
                 <Border Grid.Column="1"
                         BackgroundColor="{StaticResource Surface2}"
                         Padding="16,0">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
                     </Border.StrokeShape>
-                    <Entry Placeholder="Введите..."
+                    <Entry Placeholder="New task..."
                            PlaceholderColor="{StaticResource TextSecondary}"
                            Text="{Binding NewTaskText}"
                            ReturnType="Send"
                            ReturnCommand="{Binding AddTaskCommand}"
                            TextColor="{StaticResource White}"
                            FontSize="16"
+                           MinimumHeightRequest="48"
                            VerticalOptions="Center" />
                 </Border>
 
-                <!-- Кнопка отправки -->
+                <!-- Send button -->
                 <Border Grid.Column="2"
                         WidthRequest="56"
                         HeightRequest="56">
@@ -264,13 +274,7 @@
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding AddTaskCommand}" />
                     </Border.GestureRecognizers>
-                    <Border.Shadow>
-                        <Shadow Brush="#00E5FF" Opacity="0.4" Radius="10" Offset="0,4" />
-                    </Border.Shadow>
-                    <Label Text="📤"
-                           FontSize="26"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center" />
+                    <Image Source="send_icon.svg" WidthRequest="28" HeightRequest="28" HorizontalOptions="Center" VerticalOptions="Center" />
                 </Border>
             </Grid>
         </Border>

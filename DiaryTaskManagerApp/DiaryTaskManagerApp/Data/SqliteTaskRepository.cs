@@ -16,6 +16,11 @@ public sealed class SqliteTaskRepository : ITaskRepository
         return _db.GetAll().Select(e => e.ToModel()).ToList();
     }
 
+    public IReadOnlyList<TaskItem> GetByFolderId(string? folderId)
+    {
+        return _db.GetByFolderId(folderId).Select(e => e.ToModel()).ToList();
+    }
+
     public void Add(TaskItem task)
     {
         _db.Save(TaskItemEntity.FromModel(task));

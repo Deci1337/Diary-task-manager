@@ -25,7 +25,7 @@ public sealed class ProfilePageViewModel : INotifyPropertyChanged
         set
         {
             var v = (value ?? "").Trim();
-            if (v.Length == 0) v = "Пользователь";
+            if (v.Length == 0) v = "User";
             Set(ref _userName, v);
         }
     }
@@ -55,7 +55,7 @@ public sealed class ProfilePageViewModel : INotifyPropertyChanged
 
     public void Load()
     {
-        UserName = Preferences.Get("UserName", "Пользователь");
+        UserName = Preferences.Get("UserName", "User");
         CompletedCount = Preferences.Get("TotalCompletedCount", 0);
         AvatarPath = Preferences.Get("AvatarPath", (string?)null);
         OnPropertyChanged(nameof(FlamesText));
@@ -74,7 +74,7 @@ public sealed class ProfilePageViewModel : INotifyPropertyChanged
         {
             var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
             {
-                Title = "Выберите фото"
+                Title = "Pick a photo"
             });
 
             if (result != null)

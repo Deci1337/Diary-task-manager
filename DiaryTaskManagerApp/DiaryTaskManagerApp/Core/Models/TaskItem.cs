@@ -13,6 +13,7 @@ public sealed class TaskItem : INotifyPropertyChanged
     public required string Title { get; init; }
     public required DateTimeOffset CreatedAt { get; init; }
     public required TaskImportance Importance { get; init; }
+    public string? FolderId { get; init; }
 
     public bool IsCompleted
     {

@@ -26,6 +26,12 @@ public partial class TasksPage : ContentPage
         ViewModel.LoadHeader();
     }
 
+    private void OnMenuTapped(object? sender, TappedEventArgs e)
+    {
+        if (Shell.Current is Shell shell)
+            shell.FlyoutIsPresented = true;
+    }
+
     private async void OnProfileTapped(object? sender, TappedEventArgs e)
     {
         var page = _services.GetRequiredService<ProfilePage>();

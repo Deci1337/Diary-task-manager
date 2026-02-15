@@ -24,8 +24,8 @@ public sealed class TasksPageViewModel : INotifyPropertyChanged
         _repo = repo;
         Tasks = new ObservableCollection<TaskItem>();
 
-        FilterOptions = ["Все", "☀️", "☁️", "🌑", "✓", "✕"];
-        SortOptions = ["Новые", "Старые"];
+        FilterOptions = ["All", "☀️", "☁️", "🌑", "✓", "✕"];
+        SortOptions = ["Newest", "Oldest"];
 
         CycleImportanceCommand = new Command(CycleImportance);
         SelectImportanceCommand = new Command<int>(i => SelectedImportanceIndex = i);
@@ -47,7 +47,7 @@ public sealed class TasksPageViewModel : INotifyPropertyChanged
         set
         {
             var v = (value ?? "").Trim();
-            if (v.Length == 0) v = "Пользователь";
+            if (v.Length == 0) v = "User";
             if (Set(ref _userName, v))
             {
                 Preferences.Set("UserName", v);
@@ -131,7 +131,7 @@ public sealed class TasksPageViewModel : INotifyPropertyChanged
 
     public void LoadHeader()
     {
-        UserName = Preferences.Get("UserName", "Пользователь");
+        UserName = Preferences.Get("UserName", "User");
         CompletedCount = Preferences.Get("TotalCompletedCount", 0);
         AvatarPath = Preferences.Get("AvatarPath", (string?)null);
     }
@@ -181,7 +181,8 @@ public sealed class TasksPageViewModel : INotifyPropertyChanged
             Id = Guid.NewGuid().ToString("N"),
             Title = title,
             CreatedAt = DateTimeOffset.Now,
-            Importance = (TaskImportance)SelectedImportanceIndex
+            Importance = (TaskImportance)SelectedImportanceIndex,
+            FolderId = null
         });
 
         NewTaskText = "";
@@ -192,7 +193,7 @@ public sealed class TasksPageViewModel : INotifyPropertyChanged
     {
         var existingById = Tasks.ToDictionary(x => x.Id, x => x);
 
-        var all = _repo.GetAll();
+        var all = _repo.GetByFolderId(null);
 
         IEnumerable<TaskItem> items = all;
 

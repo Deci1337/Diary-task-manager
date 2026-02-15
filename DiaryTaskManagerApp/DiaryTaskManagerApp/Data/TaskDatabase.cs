@@ -13,7 +13,20 @@ public sealed class TaskDatabase
     {
         _connection = new SQLiteConnection(dbPath);
         _connection.CreateTable<TaskItemEntity>();
+        _connection.CreateTable<FolderEntity>();
+        MigrateAddFolderId();
         MigrateLegacyTicksAssumingMoscow();
+    }
+
+    private void MigrateAddFolderId()
+    {
+        try
+        {
+            _connection.Execute("ALTER TABLE Tasks ADD COLUMN FolderId TEXT");
+        }
+        catch
+        {
+        }
     }
 
     private void MigrateLegacyTicksAssumingMoscow()
@@ -48,6 +61,29 @@ public sealed class TaskDatabase
         return _connection.Table<TaskItemEntity>().ToList();
     }
 
+    public List<TaskItemEntity> GetByFolderId(string? folderId)
+    {
+        if (string.IsNullOrEmpty(folderId))
+            return _connection.Table<TaskItemEntity>().Where(x => x.FolderId == null || x.FolderId == "").ToList();
+        return _connection.Table<TaskItemEntity>().Where(x => x.FolderId == folderId).ToList();
+    }
+
+    public List<FolderEntity> GetAllFolders()
+    {
+        return _connection.Table<FolderEntity>().ToList();
+    }
+
+    public int SaveFolder(FolderEntity folder)
+    {
+        return _connection.InsertOrReplace(folder);
+    }
+
+    public int DeleteFolder(string id)
+    {
+        _connection.Table<TaskItemEntity>().Where(x => x.FolderId == id).ToList().ForEach(t => Delete(t.Id));
+        return _connection.Table<FolderEntity>().Delete(x => x.Id == id);
+    }
+
     public TaskItemEntity? GetById(string id)
     {
         return _connection.Table<TaskItemEntity>().FirstOrDefault(x => x.Id == id);
@@ -80,6 +116,8 @@ public sealed class TaskItemEntity
     
     public long? CompletedAtTicks { get; set; }
 
+    public string? FolderId { get; set; }
+
     public static TaskItemEntity FromModel(TaskItem model) => new()
     {
         Id = model.Id,
@@ -87,7 +125,8 @@ public sealed class TaskItemEntity
         CreatedAtTicks = model.CreatedAt.UtcTicks,
         Importance = (int)model.Importance,
         IsCompleted = model.IsCompleted,
-        CompletedAtTicks = model.CompletedAt?.UtcTicks
+        CompletedAtTicks = model.CompletedAt?.UtcTicks,
+        FolderId = model.FolderId
     };
 
     public TaskItem ToModel() => new()
@@ -97,7 +136,32 @@ public sealed class TaskItemEntity
         CreatedAt = new DateTimeOffset(CreatedAtTicks, TimeSpan.Zero),
         Importance = (TaskImportance)Importance,
         IsCompleted = IsCompleted,
-        CompletedAt = CompletedAtTicks.HasValue ? new DateTimeOffset(CompletedAtTicks.Value, TimeSpan.Zero) : null
+        CompletedAt = CompletedAtTicks.HasValue ? new DateTimeOffset(CompletedAtTicks.Value, TimeSpan.Zero) : null,
+        FolderId = FolderId
+    };
+}
+
+[Table("Folders")]
+public sealed class FolderEntity
+{
+    [PrimaryKey]
+    public string Id { get; set; } = "";
+
+    public string Name { get; set; } = "";
+    public long CreatedAtTicks { get; set; }
+
+    public static FolderEntity FromModel(Folder model) => new()
+    {
+        Id = model.Id,
+        Name = model.Name,
+        CreatedAtTicks = model.CreatedAt.UtcTicks
+    };
+
+    public Folder ToModel() => new()
+    {
+        Id = Id,
+        Name = Name,
+        CreatedAt = new DateTimeOffset(CreatedAtTicks, TimeSpan.Zero)
     };
 }
 

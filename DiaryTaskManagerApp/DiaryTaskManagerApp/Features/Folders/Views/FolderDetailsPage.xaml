@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DiaryTaskManagerApp.Features.Folders.Views.FolderDetailsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:DiaryTaskManagerApp.Core.Models"
+    xmlns:vm="clr-namespace:DiaryTaskManagerApp.Features.Folders.ViewModels"
+    x:DataType="vm:FolderDetailsViewModel"
+    BackgroundColor="{StaticResource AppBg}"
+    Title="Folder">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16,12" RowSpacing="14">
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Border WidthRequest="48" HeightRequest="48" BackgroundColor="{StaticResource Surface}" StrokeThickness="0" VerticalOptions="Center">
+                <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnBackTapped" /></Border.GestureRecognizers>
+                <Label Text="←" FontSize="24" TextColor="{StaticResource White}" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Border>
+            <Label Grid.Column="1" Text="{Binding FolderName}" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource White}" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+            <Border Grid.Column="2" BackgroundColor="#D32F2F" Padding="10,8" StrokeThickness="0" VerticalOptions="Center">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12" /></Border.StrokeShape>
+                <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding DeleteFolderCommand}" /></Border.GestureRecognizers>
+                <Label Text="Delete" FontSize="13" TextColor="White" />
+            </Border>
+        </Grid>
+
+        <!-- Tasks List -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Tasks}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="12">
+                    <Label Text="📋" FontSize="64" HorizontalOptions="Center" Opacity="0.3" />
+                    <Label Text="No tasks" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+                    <Label Text="Add a task below" FontSize="14" TextColor="{StaticResource TextSecondary}" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TaskItem">
+                    <SwipeView Margin="0,0,0,12">
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute" SwipeBehaviorOnInvoked="Close">
+                                <SwipeItem Text="Delete" BackgroundColor="#D32F2F" Invoked="OnSwipeDelete" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        
+                        <Border Padding="16" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTaskTapped" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Border WidthRequest="48" HeightRequest="48" BackgroundColor="{StaticResource Surface2}" VerticalOptions="Center">
+                                    <Border.StrokeShape><RoundRectangle CornerRadius="12" /></Border.StrokeShape>
+                                    <Label Text="{Binding Emoji}" FontSize="26" HorizontalOptions="Center" VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Border>
+                                <Label Grid.Column="1" Text="{Binding Title}" FontSize="17" FontAttributes="Bold" TextColor="{StaticResource White}"
+                                       LineBreakMode="TailTruncation" MaxLines="2" VerticalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
+                                            <Setter Property="TextDecorations" Value="Strikethrough" />
+                                            <Setter Property="Opacity" Value="0.6" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Grid>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Bottom input -->
+        <Border Grid.Row="2" BackgroundColor="{StaticResource Surface}" StrokeThickness="0">
+            <Border.StrokeShape><RoundRectangle CornerRadius="24" /></Border.StrokeShape>
+            <Grid Padding="10" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Border Grid.Column="0" WidthRequest="56" HeightRequest="56" BackgroundColor="{StaticResource Surface2}">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding CycleImportanceCommand}" /></Border.GestureRecognizers>
+                    <Label Text="{Binding CurrentImportanceEmoji}" FontSize="30" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="{StaticResource Surface2}" Padding="16,0">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <Entry Placeholder="New task..." PlaceholderColor="{StaticResource TextSecondary}" Text="{Binding NewTaskText}"
+                           ReturnType="Send" ReturnCommand="{Binding AddTaskCommand}" TextColor="{StaticResource White}" FontSize="16"
+                           MinimumHeightRequest="48" VerticalOptions="Center" />
+                </Border>
+                <Border Grid.Column="2" WidthRequest="56" HeightRequest="56">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#00E5FF" Offset="0.0" />
+                            <GradientStop Color="#00B8D4" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.GestureRecognizers><TapGestureRecognizer Command="{Binding AddTaskCommand}" /></Border.GestureRecognizers>
+                    <Image Source="send_icon.svg" WidthRequest="28" HeightRequest="28" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
